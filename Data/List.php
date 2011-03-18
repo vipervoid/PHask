@@ -53,7 +53,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
     public static function foldl(Closure $f, $i, HList $xs) {
         if ($xs instanceof Nil) return $i;
 
-        return self::foldl($f($i, $xs->a()), $xs->la());
+        return self::foldl($f, $f($i, $xs->a()), $xs->la());
     }
 
     public static function show(IShow $xs) {

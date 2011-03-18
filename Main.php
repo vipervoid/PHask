@@ -22,10 +22,11 @@ function main() {
     $l1 = HList::append(new Cons(1, new Nil()), new Cons(2, new Nil()));
     echo $l1 . PHP_EOL;
     
-    $fr = HList::foldr(function ($xs, $x) { return $x + $xs; }, 0, $c123);
+    // Eh... bug?
+    $fr = HList::foldr(function ($xs, $x) { return $x - $xs; }, 0, $c123);
     var_dump($fr);
 
-    $fl = HList::foldr(function ($xs, $x) { return $x + $xs; }, 0, $c123);
+    $fl = HList::foldl(function ($xs, $x) { return $x - $xs; }, 0, $c123);
     var_dump($fl);
 
 //    $b = HList::bind($c123, function($xs) use ($c45) { return HList::append($xs, $c45); } );
