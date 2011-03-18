@@ -142,6 +142,13 @@ abstract class HList implements IMonad, IFunctor {
             function ($xs, $x) { return new Cons($x, $xs); },
             new Nil());
     }
+
+    public static function toArray(HList $xs) {
+        return array_reverse(self::foldr(
+            function ($x, $xs) { $xs[] = $x; return $xs; },
+            array(), $xs
+        ));
+    }
 }
 
 final class Nil extends HList { }
@@ -168,7 +175,7 @@ function main() {
 
     $c123 = HList::fromArray(range(1,3));
     $c45  = HList::fromArray(range(4,6));
-
+    var_dump(HList::toArray($c123));
     $f2 = HList::fmap(function($x) { return 2*$x; }, $c123);
     echo HList::show($f2);
 
