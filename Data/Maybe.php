@@ -30,7 +30,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
         return new Nothing();
     }
 
-    public static function fmap($a2b, $fa) {
+    public static function fmap(Closure $a2b, $fa) {
         self::isMaybe($fa);
 
         // If we have a Nothing, we return Nothing

@@ -1,4 +1,4 @@
 <?php
 interface IFunctor {
-    public static function fmap($a2b, $fa);
+    public static function fmap(Closure $a2b, $fa);
 }

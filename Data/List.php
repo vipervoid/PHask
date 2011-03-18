@@ -30,7 +30,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
         return new Nil();
     }
 
-    public static function fmap($a2b, $fa) {
+    public static function fmap(Closure $a2b, $fa) {
         self::isHList($fa);
 
         if ($fa instanceof Nil) return new Nil();
