@@ -35,33 +35,33 @@ abstract class HList implements IMonad, IFunctor, IShow {
 
         if ($fa instanceof Nil) return new Nil();
 
-        return new Cons($a2b($fa->a()), HList::fmap($a2b, $fa->la()));
+        return new Cons($a2b($fa->head()), HList::fmap($a2b, $fa->tail()));
     }
 
     public static function append(HList $l1, HList $l2) {
         if ($l1 instanceof Nil) return $l2;
 
-        return new Cons($l1->a(), self::append($l1->la(), $l2));
+        return new Cons($l1->head(), self::append($l1->tail(), $l2));
     }
 
-    public static function foldr(Closure $f, $i, HList $xs) {
-        if ($xs instanceof Nil) return $i;
+    public static function foldr(Closure $f, $acc, HList $xs) {
+        if ($xs instanceof Nil) return $acc;
 
-        return $f($xs->a(), self::foldr($f, $i, $xs->la()));
+        return $f($xs->head(), self::foldr($f, $acc, $xs->tail()));
     }
 
-    public static function foldl(Closure $f, $i, HList $xs) {
-        if ($xs instanceof Nil) return $i;
+    public static function foldl(Closure $f, $acc, HList $xs) {
+        if ($xs instanceof Nil) return $acc;
 
-        return self::foldl($f, $f($i, $xs->a()), $xs->la());
+        return self::foldl($f, $f($acc, $xs->head()), $xs->tail());
     }
 
     public static function show(IShow $xs) {
         $it = $xs;
         $arr = array();
         while (!($it instanceof Nil)) {
-            $arr[] = $it->a();
-            $it = $it->la();
+            $arr[] = $it->head();
+            $it = $it->tail();
         }
 
         return '[' . implode(',', $arr) . ']';
@@ -88,20 +88,20 @@ abstract class HList implements IMonad, IFunctor, IShow {
 
 final class Nil extends HList { }
 final class Cons extends HList {
-    private $a;
-    private $la;
+    private $head;
+    private $tail;
 
-    public function a() {
-        return $this->a;
+    public function head() {
+        return $this->head;
     }
 
-    public function la() {
-        return $this->la;
+    public function tail() {
+        return $this->tail;
     }
 
-    public function __construct($a, HList $la) {
-        $this->a  = $a;
-        $this->la = $la;
+    public function __construct($head, HList $tail) {
+        $this->head = $head;
+        $this->tail = $tail;
     }
 }
 
