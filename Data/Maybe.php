@@ -15,7 +15,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
         // Otherwise we have a Just and we call the
         // a2mb function
         // TODO: Add checks to verify type sig of function
-        return $a2mb($ma->a);
+        return $a2mb($ma->a());
     }
 
     public static function bind_(IMonad $ma, IMonad $mb) {
@@ -37,7 +37,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
         if ($fa instanceof Nothing) return new Nothing();
 
         // TODO: Add check for $a2b
-        return new Just($a2b($fa->a));
+        return new Just($a2b($fa->a()));
     }
 
     public function __toString() {
@@ -52,7 +52,11 @@ final class Nothing extends Maybe {
 }
 
 final class Just extends Maybe {
-    public $a;
+    private $a;
+
+    public function a() {
+        return $this->a;
+    }
 
     public function __construct($a) {
         $this->a = $a;

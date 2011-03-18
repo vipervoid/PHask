@@ -35,33 +35,33 @@ abstract class HList implements IMonad, IFunctor, IShow {
 
         if ($fa instanceof Nil) return new Nil();
 
-        return new Cons($a2b($fa->a), HList::fmap($a2b, $fa->la));
+        return new Cons($a2b($fa->a()), HList::fmap($a2b, $fa->la()));
     }
 
     public static function append(HList $l1, HList $l2) {
         if ($l1 instanceof Nil) return $l2;
 
-        return new Cons($l1->a, self::append($l1->la, $l2));
+        return new Cons($l1->a(), self::append($l1->la(), $l2));
     }
 
     public static function foldr(Closure $f, $i, HList $xs) {
         if ($xs instanceof Nil) return $i;
 
-        return $f($xs->a, self::foldr($f, $i, $xs->la));
+        return $f($xs->a(), self::foldr($f, $i, $xs->la()));
     }
 
     public static function foldl(Closure $f, $i, HList $xs) {
         if ($xs instanceof Nil) return $i;
 
-        return self::foldl($f($i, $xs->a), $xs->la);
+        return self::foldl($f($i, $xs->a()), $xs->la());
     }
 
     public static function show(IShow $xs) {
         $it = $xs;
         $arr = array();
         while (!($it instanceof Nil)) {
-            $arr[] = $it->a;
-            $it = $it->la;
+            $arr[] = $it->a();
+            $it = $it->la();
         }
 
         return '[' . implode(',', $arr) . ']' . PHP_EOL;
@@ -88,8 +88,17 @@ abstract class HList implements IMonad, IFunctor, IShow {
 
 final class Nil extends HList { }
 final class Cons extends HList {
-    public $a;
-    public $la;
+    private $a;
+    private $la;
+
+    public function a() {
+        return $this->a;
+    }
+
+    public function la() {
+        return $this->la;
+    }
+
     public function __construct($a, HList $la) {
         $this->a  = $a;
         $this->la = $la;
