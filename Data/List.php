@@ -64,7 +64,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
             $it = $it->la();
         }
 
-        return '[' . implode(',', $arr) . ']' . PHP_EOL;
+        return '[' . implode(',', $arr) . ']';
     }
 
     public function __toString() {

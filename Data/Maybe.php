@@ -19,7 +19,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
     }
 
     public static function bind_(IMonad $ma, IMonad $mb) {
-        return Maybe::bind($ma, function ($a) use ($mb) { return $mb; });
+        return self::bind($ma, function ($a) use ($mb) { return $mb; });
     }
 
     public static function return_($a) {
@@ -47,7 +47,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
 
 final class Nothing extends Maybe {
     public static function show(IShow $show) {
-        return "Nothing" . PHP_EOL;
+        return "Nothing";
     }
 }
 
@@ -63,6 +63,6 @@ final class Just extends Maybe {
     }
 
     public static function show(IShow $show) {
-        return "Just " . $show->a() . PHP_EOL;
+        return "Just " . $show->a();
     }
 }
