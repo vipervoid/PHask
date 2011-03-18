@@ -1,6 +1,5 @@
 <?php
-
-abstract class HList implements IMonad, IFunctor {
+abstract class HList implements IMonad, IFunctor, IShow {
     private static function isHList($ma) {
         if (!($ma instanceof HList)) {
             throw new MonadException("Need HList value");
@@ -51,7 +50,7 @@ abstract class HList implements IMonad, IFunctor {
         return $f($xs->a, self::foldr($f, $i, $xs->la));
     }
 
-    public static function show(HList $xs) {
+    public static function show(IShow $xs) {
         $it = $xs;
         $arr = array();
         while (!($it instanceof Nil)) {

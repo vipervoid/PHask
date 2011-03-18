@@ -6,10 +6,6 @@ interface IMonad {
 }
 
 abstract class Monad implements IMonad {
-    public static function bind_(IMonad $ma, IMonad $mb) {
-        return Maybe::bind($ma, function ($a) use ($mb) { return $mb; });
-    }
-
     public static function fail($str) {
         throw new MonadException($str);
     }
