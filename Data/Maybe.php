@@ -63,6 +63,6 @@ final class Just extends Maybe {
     }
 
     public static function show(IShow $show) {
-        return "Just " . $show->a . PHP_EOL;
+        return "Just " . $show->a() . PHP_EOL;
     }
 }
