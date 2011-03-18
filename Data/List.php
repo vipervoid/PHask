@@ -11,7 +11,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
     m >>= k             = foldr ((++) . k) [] m
     m >> k              = foldr ((++) . (\ _ -> k)) [] m
 
-    TODO: >> and test
+    TODO: >> and test.. current implementation is completely untested
 */    
         self::isHList($ma);
 
