@@ -61,6 +61,10 @@ abstract class Maybe implements IMonad, IFunctor {
         if ($m instanceof Nothing) return "Nothing" . PHP_EOL;
         return "Just " . $m->a . PHP_EOL;
     }
+
+    public function __toString() {
+        return self::show($this);
+    }
 }
 
 final class Nothing extends Maybe { }
@@ -136,6 +140,10 @@ abstract class HList implements IMonad, IFunctor {
         return '[' . implode(',', $arr) . ']' . PHP_EOL;
     }
 
+    public function __toString() {
+        return self::show($this);
+    }
+
     public static function fromArray(array $arr) {
         return array_reduce(
             array_reverse($arr),
@@ -164,30 +172,30 @@ final class Cons extends HList {
 function main() {
     // Expected result: Just(14)
     $m1 = Maybe::bind(new Just(4), function($a) { return new Just($a + 10); });
-    echo Maybe::show($m1);
+    echo $m1;
 
     // Expected result: Just(5)
     $m2 = Monad::bind_(new Just(4), new Just(5));
-    echo Maybe::show($m2);
+    echo $m2;
 
     $f1 = Maybe::fmap(function($x) { return 5*$x; }, new Just(5));
-    echo Maybe::show($f1);
+    echo $f1;
 
     $c123 = HList::fromArray(range(1,3));
-    $c45  = HList::fromArray(range(4,6));
-    var_dump(HList::toArray($c123));
+    $c456 = HList::fromArray(range(4,6));
+    print_r(HList::toArray($c123));
     $f2 = HList::fmap(function($x) { return 2*$x; }, $c123);
-    echo HList::show($f2);
+    echo $f2;
 
     $l1 = HList::append(new Cons(1, new Nil()), new Cons(2, new Nil()));
-    echo HList::show($l1);
+    echo $l1;
     
     $fold = HList::foldr(function ($xs, $x) { return $x + $xs; }, 0, $c123);
     var_dump($fold);
 
 //    $b = HList::bind($c123, function($xs) use ($c45) { return HList::append($xs, $c45); } );
 //    echo HList::show($b);
-    echo HList::show(HList::fromArray(array(1,2,3)));
+    echo HList::fromArray(array(1,2,3));
 }
 
 main();
