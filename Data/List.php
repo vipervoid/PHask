@@ -36,25 +36,25 @@ abstract class HList implements IMonad, IFunctor, IShow {
     public static function fmap(Closure $a2b, $fa) {
         self::isHList($fa);
 
-        if ($fa instanceof Nil) return new Nil();
+        if (self::null_($fa)) return new Nil();
 
         return new Cons($a2b(HList::head($fa)), HList::fmap($a2b, HList::tail($fa)));
     }
 
     public static function append(HList $l1, HList $l2) {
-        if ($l1 instanceof Nil) return $l2;
+        if (self::null_($l1)) return $l2;
 
         return new Cons(HList::head($l1), self::append(HList::tail($l1), $l2));
     }
 
     public static function foldr(Closure $f, $acc, HList $xs) {
-        if ($xs instanceof Nil) return $acc;
+        if (self::null_($xs)) return $acc;
 
         return $f(HList::head($xs), self::foldr($f, $acc, HList::tail($xs)));
     }
 
     public static function foldl(Closure $f, $acc, HList $xs) {
-        if ($xs instanceof Nil) return $acc;
+        if (self::null_($xs)) return $acc;
 
         return self::foldl($f, $f($acc, HList::head($xs)), HList::tail($xs));
     }
@@ -72,7 +72,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
     }
 
     public static function null_(HList $l) {
-        return ($l instanceof Nil);
+        return ($l instanceof IHListNil);
     }
 
     public function __toString() {
@@ -94,8 +94,13 @@ abstract class HList implements IMonad, IFunctor, IShow {
     }
 }
 
-final class Nil extends HList { }
-final class Cons extends HList {
+interface IHListNil {}
+
+final class Nil extends HList implements IHListNil { }
+
+interface IHListCons {}
+
+final class Cons extends HList implements IHListCons {
     private $x;
     private $xs;
 

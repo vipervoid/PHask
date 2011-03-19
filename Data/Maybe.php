@@ -57,7 +57,7 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     }
 
     public static function listToMabye(HList $l) {
-        if ($l instanceof Nil) return new Nothing();
+        if (HList::null_($l)) return new Nothing();
         return new Just(HList::head($l));
     }
 
@@ -69,7 +69,7 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     }
 
     public static function mapMaybe(Closure $f, HList $as) {
-        if ($as instanceof Nil) return new Nil();
+        if (HList::null_($as)) return new Nil();
         $rs = self::mapMaybe($f, HList::tail($as));
         $m = $f(HList::head($as));
         if (self::isNothing($m)) {
@@ -81,12 +81,12 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
 
     public static function isJust(Maybe $a) {
         self::isMaybe($a);
-        return ($a instanceof Just);
+        return ($a instanceof IMaybeJust);
     }
 
     public static function isNothing(Maybe $a) {
         self::isMaybe($a);
-        return ($a instanceof Nothing);
+        return ($a instanceof IMaybeNothing);
     }
 
     public function __toString() {
@@ -94,13 +94,17 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     }
 }
 
-final class Nothing extends Maybe {
+interface IMaybeNothing {}
+
+final class Nothing extends Maybe implements IMaybeNothing {
     public static function show(IShow $show) {
         return "Nothing";
     }
 }
 
-final class Just extends Maybe {
+interface IMaybeJust {}
+
+final class Just extends Maybe implements IMaybeJust {
     private $a;
 
     public function a() {
