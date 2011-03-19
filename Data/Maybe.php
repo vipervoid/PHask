@@ -1,14 +1,40 @@
 <?php
-final class MaybeFactory {
-    private static $nothing;
+interface IMaybeFactory {
+    public static function nothing();
+    public static function just($a);
+}
 
+final class MaybeDefaultFactory implements IMaybeFactory {
     public static function nothing() {
-        if (!self::$nothing) self::$nothing = new Nothing();
-        return self::$nothing;
+        return new Nothing();
     }
 
     public static function just($a) {
         return new Just($a);
+    }
+}
+
+final class MaybeFactory implements IMaybeFactory {
+    private static $factory;
+
+    private static function getFactory() {
+        if (!self::$factory) self::setFactory(new MaybeDefaultFactory());
+        return self::$factory;
+    }
+
+    public static function setFactory(IMaybeFactory $factory) {
+        self::$factory = $factory;
+    }
+
+    private static $nothing;
+
+    public static function nothing() {
+        if (!self::$nothing) self::$nothing = self::getFactory()->nothing();
+        return self::$nothing;
+    }
+
+    public static function just($a) {
+        return self::getFactory()->just($a);
     }
 }
 
