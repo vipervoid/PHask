@@ -1,5 +1,5 @@
 <?php
-abstract class Maybe implements IMonad, IFunctor, IShow {
+abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     private static function isMaybe($ma) {
         if (!($ma instanceof Maybe)) {
             throw new MonadException("Need Maybe value");
@@ -15,11 +15,7 @@ abstract class Maybe implements IMonad, IFunctor, IShow {
         // TODO: Add checks to verify type sig of function
         return $a2mb($ma->a());
     }
-
-    public static function bind_(IMonad $ma, IMonad $mb) {
-        return self::bind($ma, function ($a) use ($mb) { return $mb; });
-    }
-
+    
     public static function return_($a) {
         return new Just($a);
     }

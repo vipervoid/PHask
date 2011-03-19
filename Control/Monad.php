@@ -8,7 +8,7 @@ interface IMonad {
 
 abstract class Monad implements IMonad {
     public static function bind_(IMonad $ma, IMonad $mb) {
-        return static::bind($ma, function ($x) { return $mb; });
+        return static::bind($ma, function ($a) use ($mb) { return $mb; });
     }
 }
 
