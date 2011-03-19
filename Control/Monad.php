@@ -6,4 +6,10 @@ interface IMonad {
     public static function fail($str);
 }
 
+abstract class Monad implements IMonad {
+    public static function bind_(IMonad $ma, IMonad $mb) {
+        return static::bind($ma, function ($x) { return $mb; });
+    }
+}
+
 class MonadException extends Exception {}

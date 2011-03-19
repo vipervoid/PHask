@@ -9,9 +9,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
     public static function bind(IMonad $ma, Closure $a2mb) {
     /*
     m >>= k             = foldr ((++) . k) [] m
-    m >> k              = foldr ((++) . (\ _ -> k)) [] m
-
-    TODO: >> and test.. current implementation is completely untested
+    TODO: >> test.. current implementation is completely untested
 */    
         self::isHList($ma);
 
@@ -24,6 +22,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
 
     public static function bind_(IMonad $ma, IMonad $mb) {
         // TODO: Implement
+        // foldr ((++) . (\ _ -> k)) [] m
     }
 
     public static function return_($a) {
