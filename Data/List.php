@@ -60,14 +60,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
     }
 
     public static function show(IShow $xs) {
-        $it = $xs;
-        $arr = array();
-        while (!($it instanceof Nil)) {
-            $arr[] = HList::head($it);
-            $it = HList::tail($it);
-        }
-
-        return '[' . implode(',', $arr) . ']';
+        return '[' . implode(',', self::toArray($xs)) . ']';
     }
 
     public static function head(Cons $l) {
