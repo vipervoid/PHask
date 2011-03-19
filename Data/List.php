@@ -78,6 +78,10 @@ abstract class HList implements IMonad, IFunctor, IShow {
         return $l->xs();
     }
 
+    public static function null_(HList $l) {
+        return ($l instanceof Nil);
+    }
+
     public function __toString() {
         return self::show($this);
     }
@@ -111,7 +115,7 @@ final class Cons extends HList {
     }
 
     public function __construct($x, HList $xs) {
-        $this->x = $x;
+        $this->x  = $x;
         $this->xs = $xs;
     }
 }
