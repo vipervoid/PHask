@@ -22,6 +22,10 @@ abstract class HList implements IMonad, IFunctor, IShow {
         return self::foldr($fn, new Nil(), $ma);
     }
 
+    public static function bind_(IMonad $ma, IMonad $mb) {
+        // TODO: Implement
+    }
+
     public static function return_($a) {
         return new Cons($a, new Nil());
     }
