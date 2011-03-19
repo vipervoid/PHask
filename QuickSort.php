@@ -3,7 +3,7 @@
 require_once "Prelude.php";
 
 class QuickSort {
-    public static function part($x, HList $xs, HList $l, HList $e, HList $g, HList $acc) {
+    private static function part($x, HList $xs, HList $l, HList $e, HList $g, HList $acc) {
         if (HList::null_($xs)) {
             return self::qsortPr($l, (HList::append($e, self::qsortPr($g, $acc))));
         } else {
@@ -24,7 +24,7 @@ class QuickSort {
         return self::qsortPr($xs, new Nil());
     }
 
-    public static function qsortPr(HList $xs, HList $acc) {
+    private static function qsortPr(HList $xs, HList $acc) {
         if (HList::null_($xs)) {
             return $acc;
         } else if (HList::null_(HList::tail($xs))) { // Check for singleton list...
@@ -48,8 +48,7 @@ function main() {
 
     $input = HList::fromArray($arr);
     echo "Input: " . $input . PHP_EOL;
-    echo "Result: " . QuickSort::qsort($input) . PHP_EOL;
-    
+    echo "Output: " . QuickSort::qsort($input) . PHP_EOL;
 }
 
 main();
