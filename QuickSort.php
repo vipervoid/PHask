@@ -2,24 +2,7 @@
 // After QuickSort: http://en.literateprograms.org/Quicksort_(Haskell)
 require_once "Prelude.php";
 
-class QuickSort {
-    private static function part($x, HList $xs, HList $l, HList $e, HList $g, HList $acc) {
-        if (HList::null_($xs)) {
-            return self::qsortPr($l, (HList::append($e, self::qsortPr($g, $acc))));
-        } else {
-            $z  = HList::head($xs);
-            $zs = HList::tail($xs);
-
-            if ($z > $x) {
-                return self::part($x, $zs, $l, $e, new Cons($z, $g), $acc);
-            } else if ($z < $x) {
-                return self::part($x, $zs, new Cons($z, $l), $e, $g, $acc);
-            } else {
-                return self::part($x, $zs, $l, new Cons($z, $e), $g, $acc);
-            }
-        }
-    }
-
+final class QuickSort {
     public static function qsort(HList $xs) {
         return self::qsortPr($xs, new Nil());
     }
@@ -38,6 +21,32 @@ class QuickSort {
                              , new Nil()
                              , $acc
                              );
+        }
+    }
+
+    private static function part($x, HList $xs, HList $l, HList $e, HList $g, HList $acc) {
+        if (HList::null_($xs)) {
+            return self::qsortPr($l, (HList::append($e, self::qsortPr($g, $acc))));
+        } else {
+            $z  = HList::head($xs);
+            $zs = HList::tail($xs);
+
+            if ($z > $x) {
+                return self::part( $x, $zs, $l, $e
+                                 , new Cons($z, $g)
+                                 , $acc
+                                 );
+            } else if ($z < $x) {
+                return self::part( $x, $zs
+                                 , new Cons($z, $l)
+                                 , $e, $g, $acc
+                                 );
+            } else {
+                return self::part( $x, $zs, $l
+                                 , new Cons($z, $e)
+                                 , $g, $acc
+                                 );
+            }
         }
     }
 }
