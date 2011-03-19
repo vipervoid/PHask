@@ -87,10 +87,10 @@ abstract class HList implements IMonad, IFunctor, IShow {
     }
 
     public static function toArray(HList $xs) {
-        return array_reverse(self::foldr(
-            function ($x, $xs) { $xs[] = $x; return $xs; },
+        return self::foldr(
+            function ($x, $xs) { array_unshift($xs, $x); return $xs; },
             array(), $xs
-        ));
+        );
     }
 }
 
