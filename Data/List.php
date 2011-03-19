@@ -1,4 +1,19 @@
 <?php
+// TODO: Allow instantiating custom classes using the factory.
+final class HListFactory {
+    private static $nil;
+
+    public static function nil() {
+        if (!self::$nil) self::$nil = new Nil();
+        return self::$nil;
+    }
+
+    public static function cons($a, HList $xs = null) {
+        if (!$xs) $xs = self::nil();
+        return new Cons($a, $xs);
+    }
+}
+
 abstract class HList implements IMonad, IFunctor, IShow {
     private static function isHList($ma) {
         if (!($ma instanceof HList)) {
@@ -17,7 +32,7 @@ abstract class HList implements IMonad, IFunctor, IShow {
             return HList::append($a2mb($x), $xs);
         };
         
-        return self::foldr($fn, new Nil(), $ma);
+        return self::foldr($fn, HListFactory::nil(), $ma);
     }
 
     public static function bind_(IMonad $ma, IMonad $mb) {
@@ -26,25 +41,29 @@ abstract class HList implements IMonad, IFunctor, IShow {
     }
 
     public static function return_($a) {
-        return new Cons($a, new Nil());
+        return HListFactory::cons($a);
     }
 
     public static function fail($str) {
-        return new Nil();
+        return HListFactory::nil();
     }
 
     public static function fmap(Closure $a2b, $fa) {
         self::isHList($fa);
 
-        if (self::null_($fa)) return new Nil();
+        if (self::null_($fa)) return HListFactory::nil();
 
-        return new Cons($a2b(HList::head($fa)), HList::fmap($a2b, HList::tail($fa)));
+        return HListFactory::cons( $a2b(HList::head($fa))
+                                 , HList::fmap($a2b, HList::tail($fa))
+                                 );
     }
 
     public static function append(HList $l1, HList $l2) {
         if (self::null_($l1)) return $l2;
 
-        return new Cons(HList::head($l1), self::append(HList::tail($l1), $l2));
+        return HListFactory::cons( HList::head($l1)
+                                 , self::append(HList::tail($l1), $l2)
+                                 );
     }
 
     public static function foldr(Closure $f, $acc, HList $xs) {
@@ -63,11 +82,11 @@ abstract class HList implements IMonad, IFunctor, IShow {
         return '[' . implode(',', self::toArray($xs)) . ']';
     }
 
-    public static function head(Cons $l) {
+    public static function head(IHListCons $l) {
         return $l->x();
     }
 
-    public static function tail(Cons $l) {
+    public static function tail(IHListCons $l) {
         return $l->xs();
     }
 
@@ -82,8 +101,8 @@ abstract class HList implements IMonad, IFunctor, IShow {
     public static function fromArray(array $arr) {
         return array_reduce(
             array_reverse($arr),
-            function ($xs, $x) { return new Cons($x, $xs); },
-            new Nil());
+            function ($xs, $x) { return HListFactory::cons($x, $xs); },
+            HListFactory::nil());
     }
 
     public static function toArray(HList $xs) {

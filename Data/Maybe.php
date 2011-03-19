@@ -1,4 +1,17 @@
 <?php
+final class MaybeFactory {
+    private static $nothing;
+
+    public static function nothing() {
+        if (!self::$nothing) self::$nothing = new Nothing();
+        return self::$nothing;
+    }
+
+    public static function just($a) {
+        return new Just($a);
+    }
+}
+
 abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     private static function isMaybe($ma) {
         if (!($ma instanceof Maybe)) {
@@ -8,7 +21,7 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
 
     public static function bind(IMonad $ma, Closure $a2mb) {
         // If we have a Nothing, we return Nothing
-        if (self::isNothing($ma)) return new Nothing();
+        if (self::isNothing($ma)) return MaybeFactory::nothing();
 
         // Otherwise we have a Just and we call the
         // a2mb function
@@ -17,19 +30,19 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     }
     
     public static function return_($a) {
-        return new Just($a);
+        return MaybeFactory::just($a);
     }
 
     public static function fail($str) {
-        return new Nothing();
+        return MaybeFactory::nothing();
     }
 
     public static function fmap(Closure $a2b, $fa) {
         // If we have a Nothing, we return Nothing
-        if (self::isNothing($fa)) return new Nothing();
+        if (self::isNothing($fa)) return MaybeFactory::nothing();
 
         // TODO: Add check for $a2b
-        return new Just($a2b($fa->a()));
+        return MaybeFactory::just($a2b($fa->a()));
     }
     
     public static function maybe_($b, Closure $f, Maybe $a) {
@@ -52,30 +65,30 @@ abstract class Maybe extends Monad implements IMonad, IFunctor, IShow {
     }
 
     public static function maybeToList(Maybe $a) {
-        if (self::isNothing($a)) return new Nil();
-        return new Cons($a->a(), new Nil());
+        if (self::isNothing($a)) return HListFactory::nil();
+        return HListFactory::cons($a->a(), HListFactory::nil());
     }
 
     public static function listToMabye(HList $l) {
-        if (HList::null_($l)) return new Nothing();
-        return new Just(HList::head($l));
+        if (HList::null_($l)) return MaybeFactory::nothing();
+        return MaybeFactory::just(HList::head($l));
     }
 
     public static function catMaybes(HList $l) {
         return HList::foldr(function ($x, $xs) {
             if (self::isJust($x)) { $xs[] = $x->a(); }
             return $xs;
-        }, new Nil(), $l);
+        }, HListFactory::nil(), $l);
     }
 
     public static function mapMaybe(Closure $f, HList $as) {
-        if (HList::null_($as)) return new Nil();
+        if (HList::null_($as)) return HListFactory::nil();
         $rs = self::mapMaybe($f, HList::tail($as));
         $m = $f(HList::head($as));
         if (self::isNothing($m)) {
             return $rs;
         } else {
-            return new Cons($m->a(), $rs);
+            return HListFactory::cons($m->a(), $rs);
         }
     }
 
