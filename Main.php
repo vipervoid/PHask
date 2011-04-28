@@ -1,4 +1,5 @@
 <?php
+// Needs less awesome!
 require_once "Prelude.php";
 
 function main() {
